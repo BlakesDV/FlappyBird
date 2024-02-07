@@ -8,9 +8,9 @@ public class PoolsPlayer : MonoBehaviour
 {
 
     private PoolScript bulletPool;
-    private Player_Input_Actions playerInputs;
+    private PlayerInput playerInputs;
 
-    public static Player1 instance;
+    public static PoolsPlayer instance;
     private bool canShoot;
     [SerializeField]
     private float timeToShoot;
@@ -39,8 +39,8 @@ public class PoolsPlayer : MonoBehaviour
     //Awake sucede primero, Awake sucede en el primer frame y Tart en el segundo, es para asegurora que se hagan bien las referencias.
     private void Awake()
     {
-        playerInputs = new Player_Input_Actions();
-        //bulletPool = GameObject
+        playerInputs = new PlayerInput();
+        bulletPool = GameObject.Find("BulletPool").GetComponent<PoolScript>();
     }
 
     void Start()
@@ -50,7 +50,7 @@ public class PoolsPlayer : MonoBehaviour
         playerInputs.Enable();
         rbPlayer = GetComponent<Rigidbody2D>();
 
-        playerInputs.Standard.Shoot.performed += Shoot;
+        playerInputs.PlayerMov.Shoot.performed += Shoot;
     }
 
     // Update is called once per frame
@@ -67,8 +67,6 @@ public class PoolsPlayer : MonoBehaviour
         */
 
         // mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-        FireRate();
-        Move();
     }
 
 
@@ -111,15 +109,11 @@ public class PoolsPlayer : MonoBehaviour
         //    }
         //    canShoot = false;
         //}
-
+        GameObject bullet = bulletPool.RequestObject();
+        bullet.SetActive(true);
+        bullet.transform.position = transform.position;
         Debug.Log("Dispara");
     }
-    /*private void Shoot1()
-    {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-        rb.AddForce(firePoint.up * speedBullet, ForceMode2D.Impulse);
-    } */
 
     private void FireRate()
     {
@@ -137,7 +131,7 @@ public class PoolsPlayer : MonoBehaviour
     private void Move()
     {
         //Vector3 direction = new Vector3(playerInputs.Standard.Move.ReadValue<Vector2>().x, playerInputs.Standard.Move.ReadValue<Vector2>().y,0).normalized;
-        Vector2 direction = new Vector2(0, playerInputs.Standard.Move.ReadValue<float>()).normalized;
+        Vector2 direction = new Vector2(0, playerInputs.PlayerMov.MovimientoBasico.ReadValue<float>()).normalized;
 
         rbPlayer.AddForce(direction * speed);
     }
@@ -154,8 +148,5 @@ public class PoolsPlayer : MonoBehaviour
     // Seguimiento de enemigo
     // Más de una vida
     // Spawn Random
-
-
-
 
 }

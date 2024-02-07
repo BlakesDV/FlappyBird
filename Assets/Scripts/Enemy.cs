@@ -30,12 +30,12 @@ public class Enemy : MonoBehaviour
         canAttack = false;
         attackTimer = attackTimeFrequency;
     }
-    void Update()
+    private void Update()
     {
-        //Attack();
+        Attack();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         Move();
     }
@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Hit(int damage, Vector2 direction, float pushForce)
+    public void Hit(int damage, Vector2 direction, float pushForce)
     {
         life -= damage;
 
@@ -61,22 +61,40 @@ public class Enemy : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        Push(direction, pushForce);
+    }
+    private void Push(Vector2 direction, float pushForce)
+    {
+        rb.AddForce(-direction * pushForce, ForceMode2D.Impulse);
     }
 
     private void Attack()
     {
-        //if()
-        //{
+        if (canAttack)
+        {
+            attackTimer += Time.deltaTime;
 
-        //}
-    }
-    private void Push()
-    {
-        //rb.AddForce(-direction * pushForce, ForceMode2D.Impulse);
+            if (attackTimer >= attackTimeFrequency)
+            {
+                Character.Instance.Hit(damage);
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject == Character.Instance) { }
+        if (collision.gameObject == Character.Instance.gameObject)
+        {
+            canAttack = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject == Character.Instance.gameObject)
+        {
+            canAttack = false;
+            attackTimer = attackTimeFrequency;
+        }
     }
 }

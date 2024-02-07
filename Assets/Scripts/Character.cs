@@ -124,4 +124,13 @@ public class Character : MonoBehaviour
             //rb.AddForce(direccion.up * velBala, ForceMode2D.Impulse);
         }
     }
+
+    public void Hit(int damage)
+    {
+        life -= damage;
+        if (life <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
 }
