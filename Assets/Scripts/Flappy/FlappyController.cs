@@ -6,21 +6,21 @@ using UnityEngine.InputSystem;
 
 public class FlappyController : MonoBehaviour
 {
-    public float jumpForce = 5f;
+    [SerializeField] float jumpForce;
+
+    private FlappyActions flappyActions;
     private Rigidbody2D rb;
-    private FlappyInputs flappy;
-    
-    // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
-        FlappyInputs.Basic.Jump.performed += Jump;
-        rb = GetComponent<Rigidbody2D>();
+        flappyActions = new FlappyActions();
+        flappyActions.Enable();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-
+        flappyActions.Standard.Jump.performed += Jump;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Jump(InputAction.CallbackContext context)
@@ -30,6 +30,6 @@ public class FlappyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        Destroy(gameObject);
     }
 }

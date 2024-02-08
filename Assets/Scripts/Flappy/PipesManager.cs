@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class PipesManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] private float timeBetweenPipes;
+
+    private float timer;
+    private PoolScript pipePool;
+
     void Start()
     {
-        
+        timer = timeBetweenPipes;
+        pipePool = GetComponent<PoolScript>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        timer += Time.deltaTime;
+
+        if (timer >= timeBetweenPipes)
+        {
+            GameObject obj = pipePool.RequestObject();
+
+            float randY = Random.Range(2.33f, -2.33f);
+            obj.transform.position = new Vector3(transform.position.x, randY, 0);
+            timer = 0;
+        }
     }
 }
